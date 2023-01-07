@@ -100,3 +100,44 @@
 .scroll-bar:horizontal:focused {
    -fx-background-color: transparent, rgb(96, 96, 96), rgb(96, 96, 96);
 }
+
+.list-cell, .list-view {
+   -fx-background-color: transparent;
+}
+
+.list-view.pageList .list-cell {
+   -fx-border-width: 1px;
+   -fx-border-color: #0c0b13;
+   -fx-border-radius: 4px;
+   -fx-background-radius: 4px;
+}
+
+.list-view.pageList .list-cell:filled:hover, .list-view.pageList .list-cell:filled:selected:hover {
+   -fx-border-color: #403972;
+}
+
+.list-view.pageList .list-cell:filled:selected {
+   -fx-background-color: #161321;
+   -fx-border-color: #161321;
+}
+
+.list-view.bookList .list-cell:filled {
+   -fx-min-height: 38px;
+   -fx-min-width: 38px;
+   -fx-max-height: 38px;
+   -fx-max-width: 38px;
+   -fx-border-width: 2px;
+   -fx-border-inset: -4px;
+   -fx-border-color: #0c0b13 ;
+   -fx-border-radius: 10px;
+   -fx-background-radius: 8px;
+   -fx-background-color: #0c0b13;
+}
+
+.list-view.bookList .list-cell:filled:hover, .list-view.bookList .list-cell:filled:selected:hover {
+   -fx-border-color: #403972;
+}
+
+.list-view.bookList .list-cell:filled:selected {
+   -fx-border-color: white;
+}
