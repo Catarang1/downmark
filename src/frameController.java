@@ -66,6 +66,7 @@ public class frameController {
         maxi.setOnMouseExited(e -> maxi_graphic.setFill(Palette.MAXI));
         exit.setOnMouseEntered(e -> exit_graphic.setFill(Palette.EXIT_HOVER));
         exit.setOnMouseExited(e -> exit_graphic.setFill(Palette.EXIT));
+        System.out.println("ready!");
     }
 
     private void setupContent() {
