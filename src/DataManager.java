@@ -1,10 +1,12 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
@@ -19,7 +21,6 @@ public class DataManager {
     public static void loadBookPaths() {
         try {
             Files.createDirectory(DATAPATH);
-            
         } catch (IOException e) {
             if (e.getClass().equals(FileAlreadyExistsException.class)) 
                 System.out.println("data folder exists");
@@ -38,19 +39,36 @@ public class DataManager {
     }
 
     public static void loadPages(Path p) {
-        System.out.println("hello loadpages method");
+        pages.clear();
         try {
-            pages.clear();
+            
             List<Path> mdFiles = Files.walk(p, 1)
                 .filter(path -> !Files.isDirectory(path))
-                .filter(x -> x.toString().endsWith("md"))
+                .filter(x -> x.toString().endsWith(".md"))
                 .collect(Collectors.toList());
 
-            System.out.println("mdFiles len: " + mdFiles.size());
             pages.addAll(mdFiles);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    public static String loadPageContent(Path p) {
+        try {
+            String content = new Scanner(new FileInputStream(p.toAbsolutePath().toString()), "UTF-8")
+                .useDelimiter("\\A")
+                    .next();
+
+            String htmlSource = 
+                new Scanner(Downmark.class.getResourceAsStream("./res/header.htm"), "UTF-8")
+                    .useDelimiter("\\A")
+                        .next();
+            
+            content = Downmark.decode(content);
+            htmlSource = htmlSource.replace("content", content);
+            return htmlSource;        
+        } catch (FileNotFoundException e) {
+            return "failed to load page content";
         }
     }
 

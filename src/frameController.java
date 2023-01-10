@@ -1,6 +1,7 @@
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -12,11 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -46,12 +42,15 @@ public class FrameController {
     @FXML private Ellipse maxi_graphic;
     @FXML private Button mini;
     @FXML private Ellipse mini_graphic;
-    @FXML private ListView pageList;
+    @FXML private ListView<Path> pageList;
     @FXML private Circle resizer;
     @FXML private Text title;
 
-    private InputStream fontStream = App.class.getResourceAsStream("./res/Cubano.ttf");
-    private Font pageListFont = Font.loadFont(fontStream, 15);
+    private InputStream pageListFontStream = App.class.getResourceAsStream("./res/Cubano.ttf");
+    private Font pageListFont = Font.loadFont(pageListFontStream, 15);
+
+    private InputStream bookListFontStream = App.class.getResourceAsStream("./res/Cubano.ttf");
+    private Font bookListFont = Font.loadFont(bookListFontStream, 20);
 
     public static String htmlSource = 
         new Scanner(Downmark.class.getResourceAsStream("./res/header.htm"), "UTF-8")
@@ -86,6 +85,9 @@ public class FrameController {
         pageList.setItems(DataManager.pages);
         pageList.setCellFactory(arg0 -> {
             return new ListCell<Path>() {
+                { // constructor
+                    setPrefWidth(0); // avoids the issues
+                }
                 @Override protected void updateItem(Path item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null || !empty) {
@@ -95,6 +97,13 @@ public class FrameController {
                         setTextFill(Palette.COLORS[indexOfCell % Palette.COLORS.length]);
                         setGraphicTextGap(14.0);
                         setGraphic(Palette.makePageIcon(indexOfCell));
+                        setOnMouseClicked(e -> {
+                            String content = DataManager.loadPageContent(item);
+                            contentView.getEngine().loadContent(content);
+                        });
+                    } else {
+                        setText(null);
+                        setGraphic(null);
                     }
                 }
             };
@@ -102,25 +111,33 @@ public class FrameController {
 
         contentView.getEngine().loadContent(htmlSource);
 
-        pageList.setItems(DataManager.pages);
         booklist.getChildren().clear();
-        for (Book b  : DataManager.books) {
-            Text t = new Text(b.getAbbreviation());
-            t.setFont(pageListFont);
-            t.setFill(Color.WHITE);
-            VBox node = new VBox(t);
-            node.setAlignment(Pos.CENTER);
-            node.setPrefSize(38, 38);
-            node.setBackground(Palette.makeBackground(Palette.BG0, 8, 0));
-            node.setOnMouseClicked(e -> {
-                for (Node ico : booklist.getChildren()) ico.getStyleClass().remove("selected");
-                node.getStyleClass().add("selected");
-                DataManager.loadPages(b.getPath());
-                System.out.println("FrameController::119: " + DataManager.pages.size());
-            });
+        for (Book book : DataManager.books) {
+            VBox node = makeBookIcon(book);
             booklist.getChildren().add(node);
         }
 
+    }
+
+    private VBox makeBookIcon(Book book) {
+        Random rand = new Random();
+        int randColorIndex = rand.nextInt(Palette.ICON_COLORS.length);
+        Text t = new Text(book.getAbbreviation());
+        t.setFont(bookListFont);
+        t.setFill(Palette.ICON_COLORS[randColorIndex][1]);
+        VBox node = new VBox(t);
+        node.setAlignment(Pos.CENTER);
+        node.setMinSize(38, 38);
+        node.setMaxSize(38, 38);
+        node.setBackground(Palette.makeBackground(Palette.ICON_COLORS[randColorIndex][0], 8, 0));
+        node.setOnMouseClicked(e -> {
+            for (Node ico : booklist.getChildren()) ico.getStyleClass().remove("selected");
+            node.getStyleClass().add("selected");
+            pageList.getItems().clear();
+            DataManager.loadPages(book.getPath());
+            pageList.setItems(DataManager.pages);
+        });
+        return node;
     }
 
     private void setupFooter() {

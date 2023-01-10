@@ -23,6 +23,7 @@ public class Downmark {
             if (header_regex.matcher(line).matches()) {
                 long order = line.chars().filter(c -> c == '#').count();
                 lines[i] = line.replaceAll("^#+ ", "<h" + order + ">");
+                lines[i] += "</h" + order + ">";
                 processed++;
             } else if (hr_regex.matcher(line).matches()) {
                 lines[i] = "<hr/>";
@@ -32,17 +33,17 @@ public class Downmark {
                 line += "</blockquote>";
                 lines[i] = line;
                 processed++;
-            } else if (img_regex.matcher(line).matches()) { 
+            } /* else if (img_regex.matcher(line).matches()) { 
                 String src = ""; String alt = "";
                 line = "<img src=\"" + src + "\" alt=\"" + alt +"\" >";
                 System.out.println(line);
-            }
+            } */
         }
 
         System.out.println(processed + "/" +  lines.length);
-        // for (String line : lines) {
-        //     System.out.println(line);
-        // }
+        for (String line : lines) {
+            System.out.println(line);
+        }
         mdString = String.join("\n", lines);
         return String.join("\n", lines);
     }

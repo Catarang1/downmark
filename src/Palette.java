@@ -18,11 +18,25 @@ public class Palette {
     public static Color PURPLE = Color.web("#ff7edb");
     public static Color YELLOW = Color.web("#eab308");
     public static Color BLUE = Color.web("#3abdfc");
+
+    public static Color ORANGE_DARK = Color.web("#510d09");
+    public static Color GREEN_DARK = Color.web("#1f4c18");
+    public static Color PURPLE_DARK = Color.web("#5b214d");
+    public static Color YELLOW_DARK = Color.web("#563d0b");
+    public static Color BLUE_DARK = Color.web("#0b4156");
     
     public static Color BG0 = Color.web("#0c0b13");
     public static Color BG1 = Color.web("#161321");
 
     public static Color[] COLORS = new Color[]{ORANGE, GREEN, PURPLE, YELLOW, BLUE};
+    public static Color[][] ICON_COLORS = 
+        new Color[][]{
+            {ORANGE, ORANGE_DARK},
+            {GREEN, GREEN_DARK},
+            {PURPLE, PURPLE_DARK},
+            {YELLOW, YELLOW_DARK},
+            {BLUE, BLUE_DARK},
+        };
 
     public static String SVG_PAGE_CONTENT = "M -7 -6 Q -7 -9 -4 -9 L 4 -9 Q 7 -9 7 -6 L 7 6 Q 7 9 4 9 L -4 9 Q -7 9 -7 6 Z M 3 -9 L 3 -7 Q 3 -5 5 -5 L 7 -5 M -4 1 L 4 1 M -3 -2 L 3 -2 M -2 4 L 2 4";
     
