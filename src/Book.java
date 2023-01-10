@@ -67,7 +67,11 @@ public class Book {
 
     public void setIcon(Image icon) {
         this.icon = icon;
-    }    
+    }
+
+    public String getAbbreviation() {
+        return this.abbreviation;
+    }
 
     @Override
     public String toString() {

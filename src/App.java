@@ -35,8 +35,7 @@ public class App extends Application {
 		primaryStage.setTitle("Downmark");
 		primaryStage.initStyle(StageStyle.TRANSPARENT);
 		primaryStage.setScene(SCENE);
-
-        // Geometry.drawBounds();        
+		   
         primaryStage.show();
 	}
 

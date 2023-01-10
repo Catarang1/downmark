@@ -1,15 +1,22 @@
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -75,16 +82,16 @@ public class FrameController {
 
     private void setupContent() {
         
-        DataManager.loadValidBooks();
-        pageList.setItems(DataManager.books);
+        DataManager.loadBookPaths();
+        pageList.setItems(DataManager.pages);
         pageList.setCellFactory(arg0 -> {
-            return new ListCell<Book>() {
-                @Override protected void updateItem(Book item, boolean empty) {
+            return new ListCell<Path>() {
+                @Override protected void updateItem(Path item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null || !empty) {
                         int indexOfCell = pageList.getItems().indexOf(item);
                         setFont(pageListFont);
-                        setText(item.getName());
+                        setText(item.getFileName().toString());
                         setTextFill(Palette.COLORS[indexOfCell % Palette.COLORS.length]);
                         setGraphicTextGap(14.0);
                         setGraphic(Palette.makePageIcon(indexOfCell));
@@ -94,13 +101,26 @@ public class FrameController {
         });
 
         contentView.getEngine().loadContent(htmlSource);
-        
-        
 
-    }
+        pageList.setItems(DataManager.pages);
+        booklist.getChildren().clear();
+        for (Book b  : DataManager.books) {
+            Text t = new Text(b.getAbbreviation());
+            t.setFont(pageListFont);
+            t.setFill(Color.WHITE);
+            VBox node = new VBox(t);
+            node.setAlignment(Pos.CENTER);
+            node.setPrefSize(38, 38);
+            node.setBackground(Palette.makeBackground(Palette.BG0, 8, 0));
+            node.setOnMouseClicked(e -> {
+                for (Node ico : booklist.getChildren()) ico.getStyleClass().remove("selected");
+                node.getStyleClass().add("selected");
+                DataManager.loadPages(b.getPath());
+                System.out.println("FrameController::119: " + DataManager.pages.size());
+            });
+            booklist.getChildren().add(node);
+        }
 
-    private static void makeNode(Book b) {
-        
     }
 
     private void setupFooter() {
